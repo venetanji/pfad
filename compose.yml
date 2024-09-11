@@ -1,0 +1,25 @@
+x-gpu: &x-gpu
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - capabilities: [gpu]
+
+services:
+  dev:
+    image: python:latest
+    command: sleep infinity
+    volumes: 
+      - ./:/workspace
+    working_dir: /workspace
+  ollama:
+    <<: *x-gpu
+    image: ollama/ollama:latest
+    volumes:
+      - ollama:/root/.ollama
+    profiles:
+      - ollama
+
+volumes:
+  ollama:
+    

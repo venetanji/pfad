@@ -1,6 +1,7 @@
 import requests
 import os
 from lxml import html
+import json
 
 
 def get_url(url, filename):
@@ -23,5 +24,8 @@ def get_url(url, filename):
     return page
 
 def parse(page, mode = 'html'):
-    if mode == 'html':
-        return html.fromstring(page)
+    match mode:
+        case 'html':
+            return html.fromstring(page)
+        case 'json':
+            return json.loads(page)

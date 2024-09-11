@@ -1,6 +1,6 @@
 import random
 import time
-vert = "\u23B8"
+vert = "|"
 hor = "\u23b4"
 size = 30
 h_prob = 0.20
@@ -24,6 +24,3 @@ for h in range(size):
         print(vert if grid[w][h][0] else " ", end="")
         print(hor if grid[w][h][1] else " ", end="")
     print()
-
-
-time.sleep(2)

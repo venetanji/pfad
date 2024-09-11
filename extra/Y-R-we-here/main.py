@@ -4,6 +4,7 @@ from langchain_core.messages.ai import AIMessage
 llm = ChatOllama(
     model="llama3.1",
     temperature=0,
+    base_url="http://ollama:11434"
     # other params...
 )
 
