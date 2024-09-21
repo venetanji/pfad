@@ -1,0 +1,63 @@
+import requests
+from lxml import html
+import dotenv
+import os
+
+# load the environment variables
+dotenv.load_dotenv()
+
+# URL for the weather data of August 2024
+url = os.getenv('URL', 'https://www.weather.gov.hk/wxinfo/pastwx/metob202408c.htm')
+filename = 'august-weather-2024.html'
+
+# Check if the page already exists locally
+if not os.path.exists(filename):
+    # Fetch the page if it doesn't exist locally
+    response = requests.get(url)
+    page_content = response.text
+
+    # Save the page content to a file for future reference
+    with open(filename, 'w', encoding='UTF8') as f:
+        f.write(page_content)
+else:
+    # Read the content from the saved file if it exists
+    with open(filename, 'r', encoding='UTF8') as f:
+        page_content = f.read()
+
+# Parse the page content using lxml
+tree = html.fromstring(page_content)
+
+# Define the XPath to extract the rows containing temperature data
+# Assuming the average temperature is in a table format and located in specific table cells
+# This XPath needs to be adjusted based on the exact structure of the HTML page
+xpath = os.getenv('ROW_XPATH', "//table//tr")
+
+# Get the rows using the XPath
+rows = tree.xpath(xpath)
+
+# Initialize a list to store the temperatures
+temperatures = []
+
+# Process each row and extract the average temperature
+row_num = 0
+for row in rows:
+    # Assuming each row has multiple columns and the temperature is in a specific column
+    columns = row.xpath(".//td")  # Get all columns in the row
+    
+    # Check if the row contains the date and the average temperature (adjust index accordingly)
+    if len(columns) >= 3:  # Assuming the third column contains the average temperature
+        day = columns[0].text_content().strip()
+        avg_temp = columns[3].text_content().strip()  # Extract the average temperature
+
+        # Print the extracted data
+        print(f'Day: {day}, Average Temperature: {avg_temp} °C')
+
+        # Store the temperature in the list
+        temperatures.append(float(avg_temp))
+
+# Calculate and print the average temperature for the month
+if temperatures:
+    monthly_avg_temp = sum(temperatures) / len(temperatures)
+    print(f'Average temperature for August 2024: {monthly_avg_temp:.2f} °C')
+else:
+    print("No temperature data found.")
