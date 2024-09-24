@@ -1,7 +1,5 @@
 import requests
-import csv
 import pandas as pd
-from bs4 import BeautifulSoup
 from pprint import pprint
 from dotenv import dotenv_values
 
