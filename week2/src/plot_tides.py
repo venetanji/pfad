@@ -4,7 +4,7 @@ import chardet
 
 
 #public
-loc = 'C:\\Users\Gao\Documents\\assignment\week2\src\Private_Data\9999.HK_historical_data.xlsx'
+loc = 'C:\\Users\Gao\Documents\\assignment\week2\src\Private_Data\Table_target.csv'
 
 #encoding
 # with open (loc,'rb') as f:
