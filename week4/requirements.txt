@@ -2,4 +2,5 @@ streamlit
 pandas
 numpy
 TTS
-st_audiorec
+streamlit-audiorec
+ollama
