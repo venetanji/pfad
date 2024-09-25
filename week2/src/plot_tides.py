@@ -1,4 +1,5 @@
 import threading
+import time
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -31,11 +32,24 @@ def thread_lock(func):
         return result
     return wrapper
 
+def repeat_1000(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        results = []
+        for _ in range(200):
+            results.append(func(*args, **kwargs))
+            time.sleep(0.02)
+        return results
+    return wrapper
+
+'''decorate end'''
+@repeat_1000
 @thread_lock
 def scrap_wrapper():
     print('Executive function scrap')
     return scrap()
 
+@repeat_1000
 @thread_lock
 def draw():
     print('Executive function Draw')

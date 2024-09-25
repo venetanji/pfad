@@ -4,7 +4,7 @@ from pprint import pprint
 from dotenv import dotenv_values
 import threading
 import time
-
+import random
 #read environment values
 env_vars = dotenv_values('.env')
 targetXLS =env_vars['XLS_container']
@@ -14,7 +14,7 @@ data_list=[]
 
 #url = "https://4.push2delay.eastmoney.com/api/qt/clist/get?cb=jQuery112409776567584598126_1727105507570&pn=1&pz=5&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&dect=1&wbp2u=|0|0|0|web&fid=f11&fs=m:0+t:6,m:0+t:80&fields=f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f12,f13,f14,f15,f16,f17,f18,f20,f21,f23,f24,f25,f26,f22,f28,f11,f62,f128,f136,f115,f152,f34,f35,f108&_=1727105507581"
 #url = "https://stock.xueqiu.com/v5/stock/screener/quote/list.json?page=2&size=100&type=sha&order_by=percent&order=desc"
-urls =[f"https://stock.xueqiu.com/v5/stock/screener/quote/list.json?page={page}&size=100&type=sha&order_by=percent&order=desc"
+urls =[f"https://stock.xueqiu.com/v5/stock/screener/quote/list.json?page={page}&size=10&type=sha&order_by=percent&order=desc"
       for page in range(1,3)
 ]
 
@@ -68,4 +68,5 @@ def scrap():
     end = time.time()
     print(f'time cost={end-start}s ')
     dl = pd.DataFrame(data_list)
+    random.shuffle(data_list)
     dl.to_excel(targetXLS, engine='openpyxl')
