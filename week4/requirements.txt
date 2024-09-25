@@ -1,5 +1,7 @@
 streamlit
 pandas
 numpy
-TTS
-st_audiorec
+TTS==0.22.0
+streamlit-audiorec
+ollama
+openai

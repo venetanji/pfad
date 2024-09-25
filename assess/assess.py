@@ -67,7 +67,7 @@ for fork in forks:
     get_commits(fork['full_name'])
 
 print('-----------------------------------')
-print('/n')
+print('\n')
 
 
 print(f'\033[92mRepos with some commits: {len(some_commits)}\033[0m')
