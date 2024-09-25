@@ -1,5 +1,7 @@
 from plot_tides import draw
-import scraping_utils
+from scraping_utils import get_data
+
+
 
 
 #main cycle
