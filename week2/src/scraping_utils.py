@@ -35,7 +35,7 @@ def get_data(url):
             'Symbol': index['symbol'],
             'Amount': index['amount'],
         }
-        pprint(dic)
+        #pprint(dic)
         #store the data
         data_list.append(dic)
 
