@@ -1,7 +1,9 @@
 streamlit
 pandas
 numpy
-TTS==0.22.0
+coqui-tts
 streamlit-audiorec
 ollama
 openai
+fastapi
+uvicorn
