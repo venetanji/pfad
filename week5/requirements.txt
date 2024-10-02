@@ -6,4 +6,5 @@ torchaudio
 streamlit
 diffusers
 accelerate
+transformers
 opencv-python
