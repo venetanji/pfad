@@ -1,8 +1,3 @@
--i https://download.pytorch.org/whl/cu124
--i https://pypi.org/simple
-torch
-torchvision
-torchaudio
 streamlit
 diffusers
 accelerate
