@@ -2,7 +2,7 @@ from diffusers import AutoPipelineForText2Image, LCMScheduler
 import torch
 
 model = 'lykon/dreamshaper-8-lcm'
-pipe = AutoPipelineForText2Image.from_pretrained(model, use_safetensors=True, torch_dtype=torch.float16)
+pipe = AutoPipelineForText2Image.from_pretrained(model, torch_dtype=torch.float16)
 pipe.to("cuda")
 pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
