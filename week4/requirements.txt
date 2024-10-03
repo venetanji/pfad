@@ -1,0 +1,9 @@
+streamlit
+pandas
+numpy
+coqui-tts
+streamlit-audiorec
+ollama
+openai
+fastapi
+uvicorn
