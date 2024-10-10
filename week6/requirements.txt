@@ -2,3 +2,4 @@ pyaudio
 diffusers
 numpy
 matplotlib
+transformers
