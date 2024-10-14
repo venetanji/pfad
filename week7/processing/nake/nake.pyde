@@ -12,7 +12,6 @@ def setup():
 def draw():
     background(255)
     stroke(99)
-    global draw_vertical, draw_horizontal
     
     for w in range(grid):
         
