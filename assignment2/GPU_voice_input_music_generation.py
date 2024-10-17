@@ -39,7 +39,7 @@ try:
                 continue
 
         # use LDM generate music
-        audios = pipeline(prompt, num_inference_steps=100, audio_length_in_s=60).audios
+        audios = pipeline(prompt, num_inference_steps=200, audio_length_in_s=60).audios
 
         # play the generated audio
         for audio in audios:
