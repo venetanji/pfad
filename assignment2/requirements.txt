@@ -1,0 +1,6 @@
+torch
+numpy
+diffusers
+pyaudio
+speech_recognition
+streamlit
