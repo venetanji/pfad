@@ -1,58 +1,75 @@
-import requests
-from lxml import html
+# warning: it seems like some memory leak , I do not know how to fix it
+import threading
+import time
 
-import dotenv
-import os
-import datetime
 import matplotlib.pyplot as plt
-from scraping_utils import get_url, parse
+import pandas as pd
+from dotenv import dotenv_values
 
-# load the environment variables
-dotenv.load_dotenv('../../week1/src/.env')
+from week2.src.scraping_utils import scrap
+from functools import wraps
+page = 2 # page amounts
 
-year = int(os.getenv('YEAR', 2024))
-filename = os.getenv('FILENAME', "crawled-page-{year}.html").format(year=year)
+#import environment variable
+env_vars = dotenv_values('.env')
+targetXLS =env_vars['XLS_container']
+#style setting
+plt.figure(figsize=(15, 6), dpi=100 ,)
+# data_location
 
-# get page
-page = get_url(os.getenv('URL'), filename)
 
-# parse the page to html
-tree = parse(page, 'html')
 
-data = []
+'''function'''
+lock = threading.Lock()
+'''ensure the thread safety'''
+def thread_lock(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        lock.acquire()
+        try:
+            result = func(*args, **kwargs)
+        finally:
+            lock.release()
+        return result
+    return wrapper
 
-# initialize row counter
-row_num = 0
+def repeat_1000(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        results = []
+        for _ in range(200):
+            results.append(func(*args, **kwargs))
+            time.sleep(0.02)
+        return results
+    return wrapper
 
-for row in tree.xpath(os.getenv('ROW_XPATH')):
-    columns = row.xpath(os.getenv('COL_XPATH'))
-    columns = [column.text_content() for column in columns]
-    columns = [column.strip() for column in columns]
-    row_string = " ".join(columns).strip()
+'''decorate end'''
+@repeat_1000
+@thread_lock
+def scrap_wrapper():
+    print('Executive function scrap')
+    return scrap()
 
-    # skip empty rows
-    if row_string.strip() == "":
-        continue
+@repeat_1000
+@thread_lock
+def draw():
+    print('Executive function Draw')
+    df = pd.read_excel(targetXLS,usecols=['Symbol','Amount'])
+    Xaxis = df['Symbol']
+    Yaxis = df['Amount']
 
-    row_num += 1
+    #draw
+    plt.bar(Xaxis,Yaxis)
+    plt.show()
 
-    print(f'Row {row_num}: {row_string}')
 
-    month = int(columns[0])
-    day = int(columns[1])
-            
-    for i in range(2, len(columns), 2):
-        if columns[i] != "":
-            # get the time in HHMM format
-            hour = columns[i][:2]
-            minute = columns[i][2:]
+'''Threading pool'''
+thread1 = threading.Thread(target=scrap_wrapper)
+thread2 = threading.Thread(target=draw)
 
-            dt = datetime.datetime(year,month,day,int(hour),int(minute))
-            value = columns[i+1]
-            print(f'{dt} - {value}')
-            data.append((dt, value))            
+"""Main"""
+if __name__ == '__main__':
+    thread1.start()
+    thread2.start()
 
-# plot
-fig, ax = plt.subplots()
-ax.plot([record[0] for record in data], [float(record[1]) for record in data])
-plt.show()
+
