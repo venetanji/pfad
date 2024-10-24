@@ -1,0 +1,28 @@
+x-gpu: &x-gpu
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            capabilities: ["gpu"]  
+
+services:
+  bot:
+    build: .
+    volumes:
+      - ./src/:/app
+    depends_on:
+      - ollama
+    command: streamlit run app.py
+    ports:
+      - 8501:8501
+
+  ollama: 
+    image: ollama/ollama:latest
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - 11434:11434
+  
+volumes:
+  ollama:
