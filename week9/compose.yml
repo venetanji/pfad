@@ -1,0 +1,23 @@
+x-gpu: &x-gpu
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            capabilities: ["gpu"]
+
+services:
+  whisper:
+    <<: *x-gpu
+    image: fedirz/faster-whisper-server:latest-cuda
+    ports:
+      - 8000:8000
+
+  audiocraft:
+    <<: *x-gpu
+    image: ghcr.io/venetanji/audiocraft-server
+    ports:
+      - 7860:7860
+
+volumes:
+  xtts:
