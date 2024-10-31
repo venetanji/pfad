@@ -15,7 +15,7 @@ services:
 
   audiocraft:
     <<: *x-gpu
-    image: ghcr.io/venetanji/audiocraft-server
+    image: ghcr.io/venetanji/audiocraft-server:main
     ports:
       - 7860:7860
 
