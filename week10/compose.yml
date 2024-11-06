@@ -1,0 +1,37 @@
+x-gpu: &x-gpu
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - capabilities: [gpu]
+
+services:
+  ollama:
+    <<: *x-gpu
+    image: ollama/ollama:latest
+    environment:
+      OLLAMA_DEBUG: 1
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - 11434:11434
+  weaviate:
+    <<: *x-gpu
+    image: cr.weaviate.io/semitechnologies/weaviate:1.26.4
+    volumes:
+        - weaviate_data:/var/lib/weaviate
+    environment:
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+    ports:
+      - 8080:8080
+      - 50051:50051
+
+volumes:
+  ollama:
+    # Without options it creates a new volume with project prefix
+    # Uncomment the following lines to use a named
+    # volume to share with other projects:
+    #
+    # external: true
+    # name: pfad_ollama
+  weaviate_data:

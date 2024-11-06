@@ -1,4 +1,4 @@
-from peewee import Model, CharField, BooleanField
+from peewee import Model, CharField
 from playhouse.sqlite_ext import SqliteExtDatabase
 
 # Initialize the database
@@ -8,8 +8,6 @@ class User(Model):
     username = CharField(unique=True)
     email = CharField(unique=True)
     password = CharField()
-    is_active = BooleanField(default=True)
-    is_admin = BooleanField(default=False)
 
     class Meta:
         database = db

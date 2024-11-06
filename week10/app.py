@@ -48,13 +48,11 @@ def register():
             # redirect to login page
             st.switch_page(login_page)
             
-
 def login():
     st.subheader("Login")
     username = st.text_input("Username")
     password = st.text_input("Password", type='password')
-    if st.button("Login"):
-        
+    if st.button("Login")
         if user := login_user(username, password):
             st.session_state.user = user
             st.success(f"Welcome, {user.username}!")
