@@ -1,4 +1,4 @@
 diffusers
-python-opencv
+opencv-python
 transformers
 accelerate
