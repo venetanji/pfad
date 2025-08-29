@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from scraping_utils import get_url, parse
 
 # load the environment variables
-dotenv.load_dotenv('../../week1/src/.env')
+dotenv.load_dotenv()
 
 year = int(os.getenv('YEAR', 2024))
 filename = os.getenv('FILENAME', "crawled-page-{year}.html").format(year=year)
