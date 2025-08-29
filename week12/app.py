@@ -4,6 +4,7 @@ from langchain_ollama import ChatOllama
 from pathlib import Path
 import pymupdf4llm
 import uuid
+import random
 
 import asyncio
 import json
@@ -30,7 +31,8 @@ def comfyui():
 
     batch_size = st.slider("Batch Size", 1, 10, 2)
 
-    if prompt := st.text_input("Prompt"):       
+    if prompt := st.text_input("Prompt"):
+        wf.set_node_param("KSampler", "seed", random.randint(0, 1000))       
         wf.set_node_param("Empty Latent Image", "batch_size", batch_size)
         wf.set_node_param("positive", "text", prompt)
         

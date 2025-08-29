@@ -1,5 +1,0 @@
-streamlit
-diffusers
-accelerate
-transformers
-opencv-python
