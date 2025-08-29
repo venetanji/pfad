@@ -1,1 +1,2 @@
-week4/samples/*
+# ignore pycache in every subfolder
+**/__pycache__/
