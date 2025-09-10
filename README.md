@@ -43,6 +43,26 @@ In Week 01, we explore the basics of web scraping using Python. The main script 
 
 This week establishes fundamental data collection techniques that will be used throughout the course.
 
+### Week 02: Data Visualization & Utilities 📊
+
+Week 02 focuses on data visualization, basic data processing, and utility scripts in Python. The folder includes:
+
+- `draw_svg.py`: Script for drawing SVG graphics programmatically.
+- `multi_city_temp.py`: Handles temperature data for multiple cities, likely involving data parsing and visualization.
+- `plot_tides.py`: Plots tide data, building on the data collection from Week 01.
+- `scraping_utils.py`: Utility functions for web scraping and data handling.
+- `tides_csv.py`: Processes and saves tide data to CSV format.
+- `week02_notebook.ipynb`: Jupyter notebook with interactive code and explanations for the week's topics.
+- `requirements.txt`: Lists required Python packages for this week's exercises.
+
+There is also a `python_foundations/` subfolder with foundational Jupyter notebooks covering:
+- Flow control keywords
+- Functions and arguments
+- Installing and using matplotlib
+- Expanded variable types in Python
+
+These resources help reinforce core Python concepts and introduce data visualization techniques.
+
 ## 🧪 Extra Resources
 
 The `/extra` folder contains additional code examples and experimental projects that might be helpful for your assignments:
