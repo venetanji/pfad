@@ -11,7 +11,7 @@ canvas.create_rectangle(0, 0, width, height, fill='white')
 
 
 def draw_point(pos):
-    x, y = pos  + np.array([(random.random() - 0.5)*10 for _ in range(2)])
+    x, y = pos  + np.array([(random.random() - 0.5)*500 for _ in range(2)])
     canvas.create_oval(x-1, y-1, x + 1, y + 1, fill='black')
     canvas.after(10, draw_point, pos)
 
