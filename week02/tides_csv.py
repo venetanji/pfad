@@ -77,14 +77,17 @@ for row in tree.xpath(os.getenv('ROW_XPATH')):
             # append the datetime and value to the data list
             data.append((dt, value))
 
-# create csv file
-for record in data:
-    
-    # print the record for debugging purposes
-    print(f'{record[0].strftime("%Y-%m-%d %H:%M")},{record[1]}')
 
-    # open the csv file
-    with open('tides.csv', 'a') as f:
+with open('tides.csv', 'w') as f:
+    f.write("Date,Height\n")
+    # create csv file
+    for record in data:
+        
+        # print the record for debugging purposes
+        print(f'{record[0].strftime("%Y-%m-%d %H:%M")},{record[1]}')
 
-        # write the record to the csv file
+        # open the csv file
+        
+
+            # write the record to the csv file
         f.write(f'{record[0].strftime("%Y-%m-%d %H:%M")},{record[1]}\n')
