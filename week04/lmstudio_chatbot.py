@@ -18,7 +18,7 @@ if prompt := st.chat_input():
     st.chat_message("user").write(prompt)
     
     response = client.chat.completions.create(
-        model="lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF",
+        model="qwen/qwen3-4b-2507",
         messages=st.session_state.messages,
         stream=True,
     )
