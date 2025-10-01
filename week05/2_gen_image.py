@@ -1,4 +1,6 @@
 from diffusers import DiffusionPipeline
+
+
 import torch
 
 model = "runwayml/stable-diffusion-v1-5"
