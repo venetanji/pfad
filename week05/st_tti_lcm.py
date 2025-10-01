@@ -5,7 +5,7 @@ from diffusers import AutoPipelineForText2Image, LCMScheduler
 if "pipeline" not in st.session_state:
     model = 'lykon/dreamshaper-8-lcm'
     pipe = AutoPipelineForText2Image.from_pretrained(model, torch_dtype=torch.float16)
-    pipe.to("cuda")
+    pipe.to("cuda" if torch.cuda.is_available() else "cpu")
     pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
     st.session_state["pipeline"] = pipe
 
@@ -20,5 +20,7 @@ if prompt := st.text_input("Prompt"):
         for image in images:
             st.session_state["images"].append(image)
 
+
+# show images in reverse order (latest first)
 for img in st.session_state["images"][::-1]:
     st.image(img)

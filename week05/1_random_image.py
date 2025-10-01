@@ -9,5 +9,5 @@ img_dimensions = {
 }
 
 data = np.random.randint(**img_dimensions)
-img = Image.fromarray(data, 'RGB')
+img = Image.fromarray(data)
 img.show()

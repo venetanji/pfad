@@ -30,11 +30,11 @@ def do_canny(image):
 if uploaded_file := st.file_uploader("Choose a file"):
     uploaded_file = Image.open(uploaded_file)
     canny_image = do_canny(uploaded_file)
-    st.image(canny_image, use_column_width=True)
+    st.image(canny_image, use_container_width=True)
     if prompt := st.text_input("Prompt"):
         with st.spinner("Generating..."):
             image = st.session_state["pipeline"](prompt, image=canny_image, num_inference_steps=20).images[0]
-            st.image(image, use_column_width=True)
+            st.image(image, use_container_width=True)
 
 
 
