@@ -1,7 +1,7 @@
 class Ball:
     def __init__(self, **kwargs):
         self.position = kwargs.get("position", PVector.random2D().mult(width))
-        self.velocity = kwargs.get("velocity", PVector.random2D())
+        self.velocity = kwargs.get("velocity", PVector.random2D().mult(0.1))
         self.color = color(random(360), 70, 70, 70)
         self.size = 20 + random(80)
         
@@ -21,7 +21,7 @@ def setup():
 
     global balls, n_balls, speed, iteration
     iteration = 1.0
-    speed = 2
+    speed = 10
     balls = []
     n_balls = 10
     for n in range(n_balls):
@@ -31,9 +31,9 @@ def setup():
 def draw():
     global iteration
     background(255, 0, 100)
-    iteration += 0.005
+    iteration += 0.01
     current_speed = sin(iteration)*speed
-    [ball.update(20) for ball in balls]
+    [ball.update(current_speed) for ball in balls]
     
     if mousePressed:
         balls.append(Ball(position=PVector(mouseX, mouseY)))
