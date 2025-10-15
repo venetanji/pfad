@@ -5,7 +5,7 @@ from langgraph.prebuilt import create_react_agent
 import random
 
 config = {"configurable": {"thread_id": "1"}}
-model = ChatOllama(model="llama3.1")
+model = ChatOllama(model="qwen3:4b")
 weather = {}
 
 @tool

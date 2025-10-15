@@ -32,7 +32,7 @@ tools = [get_weather]
 
 tool_node = ToolNode(tools)
 
-llm = ChatOllama(model="venetanji/llama3.2-tool").bind_tools(tools)
+llm = ChatOllama(model="qwen3:4b").bind_tools(tools)
 
 def should_continue(state: MessagesState) -> Literal["tools", END]:
     messages = state['messages']

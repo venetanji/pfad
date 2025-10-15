@@ -21,7 +21,7 @@ class State(TypedDict):
 
 graph_builder = StateGraph(State)
 
-llm = ChatOllama(model="llama3.2")
+llm = ChatOllama(model="qwen3:4b")
 
 def chatbot(state: State):
     return {"messages": [llm.invoke(state["messages"])]}
