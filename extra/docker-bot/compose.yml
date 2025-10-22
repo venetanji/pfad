@@ -16,6 +16,12 @@ services:
     command: streamlit run app.py
     ports:
       - 8501:8501
+    env_file:
+      - .env
+    environment:
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
+      - THREAD_ID=${THREAD_ID}
 
   ollama:
     <<: *x-gpu 

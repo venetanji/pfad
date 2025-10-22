@@ -7,9 +7,22 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode
 import random
+import os
 
+# Load environment variables from .env file if it exists (for local development)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # python-dotenv not available, skip loading .env file
+    pass
 
-config = {"configurable": {"thread_id": "1"}}
+# Configuration from environment variables
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen3:4b")
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://ollama:11434")
+THREAD_ID = os.getenv("THREAD_ID", "1")
+
+config = {"configurable": {"thread_id": THREAD_ID}}
 weather = {}
 
 @tool
@@ -33,7 +46,7 @@ tools = [get_weather]
 
 tool_node = ToolNode(tools)
 
-llm = ChatOllama(model="qwen3:4b", base_url="http://ollama:11434").bind_tools(tools)
+llm = ChatOllama(model=OLLAMA_MODEL, base_url=OLLAMA_BASE_URL).bind_tools(tools)
 
 def should_continue(state: MessagesState) -> Literal["tools", END]:
     messages = state['messages']
