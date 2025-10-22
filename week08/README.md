@@ -51,17 +51,23 @@ pip install -r requirements.txt
 - Pose recognition
 - Real-time body tracking
 
-### 4. Holistic Detection (`4_holistic_detection.py`)
-- Combines face mesh, pose, and hand detection
-- Unified model for comprehensive body analysis
-- Shows detection status for each component
-- Counts total landmarks detected
+### 4. Face Mesh (`4_face_mesh.py`)
+- Detailed face landmark detection with 468 points
+- Multiple visualization modes: contours, full mesh, irises
+- High-precision facial feature mapping
+- Interactive mode switching
 
 **Key Features:**
-- Face mesh (468 landmarks)
-- Pose detection (33 landmarks)
-- Hand detection (21 landmarks each)
-- Integrated processing
+- 468 facial landmarks
+- Face contours visualization
+- Full face mesh tessellation
+- Iris tracking (when enabled)
+- Interactive controls to switch between modes
+
+**Controls:**
+- `c` - Contours only mode
+- `f` - Full mesh mode  
+- `i` - Irises + contours mode
 
 ### 5. Gesture Recognition (`5_gesture_recognition.py`)
 - Recognizes common hand gestures
@@ -80,17 +86,17 @@ pip install -r requirements.txt
 - 👌 OK Sign
 - Numbers 1-5
 
-### 6. Objectron Detection (`6_objectron_detection.py`)
-- 3D object detection for specific objects
-- Supports Cup, Shoe, Chair, Camera detection
-- 3D bounding boxes and axis visualization
-- Switchable between different object models
+### 6. Holistic Detection (`6_holistic_detection.py`)
+- Combines face mesh, pose, and hand detection
+- Unified model for comprehensive body analysis
+- Shows detection status for each component
+- Counts total landmarks detected
 
 **Key Features:**
-- 3D object detection
-- Multiple object categories
-- 3D bounding box visualization
-- Model switching capability
+- Face mesh (468 landmarks)
+- Pose detection (33 landmarks)
+- Hand detection (21 landmarks each)
+- Integrated processing
 
 ### 7. Selfie Segmentation (`7_selfie_segmentation.py`)
 - Person segmentation for virtual backgrounds
@@ -169,12 +175,6 @@ If you need to use a different camera temporarily, you can:
 
 If you see errors like `Error parsing text-format mediapipe.CalculatorGraphConfig`, try:
 
-**Quick Fix:**
-```bash
-# Run the automatic fix script
-python fix_mediapipe.py
-```
-
 **Manual Fix:**
 ```bash
 # Uninstall conflicting packages
@@ -224,7 +224,7 @@ pip install -r requirements.txt
 - `ESC` - Alternative quit key
 
 ### Specific Controls
-- **Objectron**: `n` - Switch object model
+- **Face Mesh**: `c` - Contours, `f` - Full mesh, `i` - Irises
 - **Selfie Segmentation**: `b` - Change background, `o` - Original view
 - **Multi-Detection**: `f` - Face, `h` - Hands, `p` - Pose, `s` - Segmentation
 
@@ -235,18 +235,22 @@ These examples can be used as building blocks for:
 - **Fitness Applications**: Pose estimation for exercise tracking
 - **Sign Language Recognition**: Hand gesture classification
 - **Video Conferencing**: Background replacement and effects
-- **Augmented Reality**: Face and hand tracking for AR filters
+- **Augmented Reality**: Face mesh and hand tracking for AR filters
 - **Security Systems**: Face detection and recognition
 - **Accessibility Tools**: Gesture-based control interfaces
 - **Gaming**: Motion-based game controls
 - **Medical Applications**: Posture analysis and rehabilitation
+- **Beauty Applications**: Face mesh for makeup filters and facial analysis
 
 ## Performance Notes
 
 - **Face Detection**: ~30-60 FPS on most modern computers
 - **Hand Tracking**: ~20-40 FPS depending on number of hands
 - **Pose Estimation**: ~15-30 FPS for full body tracking
+- **Face Mesh**: ~20-40 FPS depending on visualization mode
+- **Gesture Recognition**: ~25-40 FPS with hand tracking overhead
 - **Holistic Model**: ~10-25 FPS (combines all features)
+- **Selfie Segmentation**: ~20-35 FPS depending on background complexity
 - **Multi-Detection**: Varies based on active modules
 
 ## Further Reading
