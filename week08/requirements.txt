@@ -1,3 +1,6 @@
-langgraph
-langchain_ollama
-streamlit
+mediapipe==0.10.21
+opencv-python
+matplotlib
+Pillow
+protobuf
+python-dotenv
