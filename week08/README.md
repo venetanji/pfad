@@ -199,28 +199,6 @@ If you need to use a different camera temporarily, you can:
 - Reduce video resolution if experiencing lag
 - Toggle off unused detection modules in multi-detection example
 
-### Troubleshooting
-
-### MediaPipe Protobuf Errors (Windows)
-
-If you see errors like `Error parsing text-format mediapipe.CalculatorGraphConfig`, try:
-
-**Manual Fix:**
-```bash
-# Uninstall conflicting packages
-pip uninstall mediapipe protobuf opencv-python
-
-# Install compatible versions
-pip install protobuf==3.20.3
-pip install mediapipe==0.10.7
-pip install opencv-python==4.8.0.76
-```
-
-**Alternative - Use OpenCV Fallback:**
-```bash
-# If MediaPipe still doesn't work, use the fallback script
-python opencv_face_detection.py
-```
 
 ### Camera Issues
 ```python
@@ -232,20 +210,6 @@ for i in range(5):
         print(f"Camera {i} is available")
         cap.release()
 ```
-
-### Virtual Environment Solution
-```bash
-# Create fresh environment (recommended for Windows)
-python -m venv mediapipe_env
-mediapipe_env\Scripts\activate
-pip install -r requirements.txt
-```
-
-### Common Solutions
-1. **Protobuf version conflict**: Use protobuf==3.20.3
-2. **GPU issues on Windows**: Set `MEDIAPIPE_DISABLE_GPU=1`
-3. **Path issues**: Use absolute paths for camera indices
-4. **Python version**: Ensure Python 3.8+ is being used
 
 ## Controls
 
@@ -290,8 +254,6 @@ These examples can be used as building blocks for:
 ## Further Reading
 
 - [MediaPipe Documentation](https://mediapipe.dev/)
-- [MediaPipe Python API](https://google.github.io/mediapipe/getting_started/python.html)
-- [MediaPipe Solutions](https://google.github.io/mediapipe/solutions/solutions.html)
 
 ## Advanced Usage
 
