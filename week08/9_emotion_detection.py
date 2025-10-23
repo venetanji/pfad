@@ -22,19 +22,20 @@ def create_emotion_colors():
     """Create color mapping for different emotions"""
     return {
         'happy': (0, 255, 0),       # Green
-        'sad': (255, 0, 0),         # Blue
+        'happiness': (0, 255, 0),   # Green (EmotiEffLib format)
+        'sad': (255, 0, 0),         # Blue  
+        'sadness': (255, 0, 0),     # Blue (EmotiEffLib format)
         'angry': (0, 0, 255),       # Red
-        'surprised': (0, 255, 255), # Yellow
+        'anger': (0, 0, 255),       # Red (EmotiEffLib format)
+        'surprised': (0, 255, 255), # Cyan
+        'surprise': (0, 255, 255),  # Cyan (EmotiEffLib format)
         'fearful': (128, 0, 128),   # Purple
-        'fear': (128, 0, 128),      # Purple (alternative name)
+        'fear': (128, 0, 128),      # Purple (EmotiEffLib format)
         'disgusted': (0, 128, 128), # Teal
-        'disgust': (0, 128, 128),   # Teal (alternative name)
-        'neutral': (128, 128, 128), # Gray (changed from white for visibility)
+        'disgust': (0, 128, 128),   # Teal (EmotiEffLib format)
+        'neutral': (128, 128, 128), # Gray
         'contempt': (255, 128, 0),  # Orange
-        'joy': (0, 255, 0),         # Green (alternative for happy)
-        'sadness': (255, 0, 0),     # Blue (alternative for sad)
-        'anger': (0, 0, 255),       # Red (alternative for angry)
-        'surprise': (0, 255, 255),  # Yellow (alternative for surprised)
+        'joy': (0, 255, 0),         # Green (alternative)
     }
 
 def main():
@@ -165,10 +166,7 @@ def main():
                                 
                                 # Get color for emotion (try exact match first, then lowercase)
                                 emotion_key = emotion_name.lower().strip()
-                                color = emotion_colors.get(emotion_key, emotion_colors.get(emotion_name, (255, 255, 255)))
-                                
-                                # Debug: Print emotion name and color (remove this after testing)
-                                print(f"🎨 Emotion: '{emotion_name}' -> Color: {color}")
+                                color = emotion_colors.get(emotion_key, emotion_colors.get(emotion_name, (128, 128, 128)))
                                 
                                 # Draw bounding box
                                 cv2.rectangle(frame, (x, y), (x + width, y + height), color, 2)
