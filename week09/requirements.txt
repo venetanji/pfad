@@ -1,3 +1,6 @@
 fastapi
 websockets
 uvicorn
+pyaudio
+numpy
+requests
