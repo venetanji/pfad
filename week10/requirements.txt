@@ -1,8 +1,9 @@
 peewee
-langchain_ollama
+langchain_openai
 langgraph
 langchain
-weaviate
+langchain-qdrant
 pymupdf4llm
 langchain_community
 gensim
+streamlit
