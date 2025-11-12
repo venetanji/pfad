@@ -3,3 +3,6 @@
 
 # any .venv folder
 **/.venv/
+
+**/.env
+**/.python-version

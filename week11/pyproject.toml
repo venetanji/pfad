@@ -1,0 +1,12 @@
+[project]
+name = "week11"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "cyndilib",
+    "mediapipe",
+    "opencv-python",
+    "python-osc"
+]
