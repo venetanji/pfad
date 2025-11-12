@@ -69,6 +69,39 @@ pip install -r requirements.txt
 - `numpy` - Numerical operations
 - `python-dotenv` - Environment configuration
 
+### Testing and Validation
+
+Before running the full application, you can validate the setup:
+
+#### Run Validation Tests
+
+```bash
+python test_validation.py
+```
+
+This tests:
+- File structure
+- Week08 integration
+- Requirements completeness
+- Code syntax
+- Hand calculation logic
+- OSC message patterns
+
+#### Test OSC Messages
+
+To test your OSC receiver without NDI/camera setup:
+
+```bash
+python osc_demo.py
+```
+
+This sends animated example OSC messages showing what the real application sends.
+
+Options:
+- `--osc-ip` : IP address to send to (default: 127.0.0.1)
+- `--osc-port` : Port number (default: 8000)
+- `--duration` : How long to run in seconds (default: 10)
+
 ### Usage
 
 #### Basic Usage (Auto-detect NDI source)
@@ -251,6 +284,27 @@ This application can be used as a foundation for:
 - **cyndilib**: Python wrapper for NDI SDK
 - **python-osc**: OSC implementation for Python
 - **OpenCV**: Computer vision library
+
+### Helper Scripts
+
+#### test_validation.py
+
+Validates the implementation without requiring dependencies:
+- Tests file structure and integration
+- Validates calculation logic
+- Checks OSC message patterns
+- Verifies code syntax
+
+Run with: `python test_validation.py`
+
+#### osc_demo.py
+
+Sends example OSC messages for testing receivers:
+- Simulates animated hand movements
+- No camera or NDI required
+- Useful for testing TouchDesigner/Max patches
+
+Run with: `python osc_demo.py [--osc-ip IP] [--osc-port PORT] [--duration SECONDS]`
 
 ### License
 
