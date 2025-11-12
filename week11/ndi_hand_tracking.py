@@ -134,7 +134,11 @@ class NDIHandTracker:
         # Frame counter for display
         self.frame_count = 0
         
-        # Simplified hand tracking - single hand is always ID 0
+        # Position smoothing with rolling average
+        self.position_history = {}  # Store position history for each hand ID
+        self.smoothing_window = 5   # Number of frames to average over (higher = more smoothing)
+        self.smoothing_factor = 0.7  # Exponential smoothing (0-1, higher = more smoothing)
+        self.max_history_age = 30   # Remove history for hands not seen for this many frames
         
     def setup_ndi_receiver(self):
         """
@@ -247,7 +251,68 @@ class NDIHandTracker:
         
         return (center_x, center_y)
     
-
+    def smooth_hand_positions(self, hands_data):
+        """
+        Apply smoothing to hand positions to reduce jitter
+        
+        Uses a combination of:
+        1. Rolling average over recent frames
+        2. Exponential smoothing for additional stability
+        
+        Args:
+            hands_data: List of HandData objects with raw positions
+            
+        Returns:
+            list: HandData objects with smoothed positions
+        """
+        for hand in hands_data:
+            hand_id = hand.hand_id
+            current_pos = (hand.center_x, hand.center_y)
+            
+            # Initialize history for new hands
+            if hand_id not in self.position_history:
+                self.position_history[hand_id] = []
+            
+            # Add current position to history
+            self.position_history[hand_id].append(current_pos)
+            
+            # Keep only recent positions (rolling window)
+            if len(self.position_history[hand_id]) > self.smoothing_window:
+                self.position_history[hand_id] = self.position_history[hand_id][-self.smoothing_window:]
+            
+            # Calculate rolling average
+            history = self.position_history[hand_id]
+            if len(history) > 1:
+                avg_x = sum(pos[0] for pos in history) / len(history)
+                avg_y = sum(pos[1] for pos in history) / len(history)
+                
+                # Apply exponential smoothing for additional stability
+                # Higher smoothing_factor = more smoothing, less responsiveness
+                hand.center_x = self.smoothing_factor * avg_x + (1 - self.smoothing_factor) * hand.center_x
+                hand.center_y = self.smoothing_factor * avg_y + (1 - self.smoothing_factor) * hand.center_y
+        
+        # Clean up old hand histories
+        self.cleanup_old_hand_history(hands_data)
+        
+        return hands_data
+    
+    def cleanup_old_hand_history(self, current_hands):
+        """
+        Remove position history for hands that are no longer detected
+        
+        Args:
+            current_hands: List of currently detected HandData objects
+        """
+        current_hand_ids = {hand.hand_id for hand in current_hands}
+        
+        # Remove history for hands not currently detected
+        hands_to_remove = []
+        for hand_id in self.position_history:
+            if hand_id not in current_hand_ids:
+                hands_to_remove.append(hand_id)
+        
+        for hand_id in hands_to_remove:
+            del self.position_history[hand_id]
     
     def calculate_pinch_data(self, hand_landmarks, frame_shape):
         """
@@ -350,6 +415,9 @@ class NDIHandTracker:
         # Simple hand ID assignment: first hand is always 0, second is 1
         for i, hand_data in enumerate(hands_data):
             hand_data.hand_id = i
+        
+        # Apply position smoothing to reduce jitter
+        hands_data = self.smooth_hand_positions(hands_data)
         
         return hands_data, results
     
@@ -643,6 +711,18 @@ def main():
         default=8000,
         help='Port number for OSC messages (default: 8000)'
     )
+    parser.add_argument(
+        '--smoothing-window',
+        type=int,
+        default=5,
+        help='Number of frames for rolling average smoothing (default: 5)'
+    )
+    parser.add_argument(
+        '--smoothing-factor',
+        type=float,
+        default=0.7,
+        help='Exponential smoothing factor 0-1, higher=more smoothing (default: 0.7)'
+    )
     
     args = parser.parse_args()
     
@@ -652,6 +732,10 @@ def main():
         osc_ip=args.osc_ip,
         osc_port=args.osc_port
     )
+    
+    # Apply smoothing settings from command line
+    tracker.smoothing_window = args.smoothing_window
+    tracker.smoothing_factor = args.smoothing_factor
     
     tracker.run()
 
