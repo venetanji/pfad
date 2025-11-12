@@ -1,7 +1,6 @@
 from typing import Annotated
 from typing_extensions import TypedDict
-from langchain_ollama import ChatOllama
-
+from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
@@ -21,7 +20,7 @@ class State(TypedDict):
 
 graph_builder = StateGraph(State)
 
-llm = ChatOllama(model="qwen3:4b")
+llm = ChatOpenAI(model="qwen/qwen3-4b-2507", api_key="your_api_key", base_url="http://localhost:1234/v1")
 
 def chatbot(state: State):
     return {"messages": [llm.invoke(state["messages"])]}

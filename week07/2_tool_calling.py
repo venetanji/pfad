@@ -2,10 +2,17 @@ from typing import Annotated, Literal, TypedDict
 from typing import List
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
-from langchain_ollama import ChatOllama
+
+from langchain_openai import ChatOpenAI
+
+
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode
+
+from langchain_community.tools import WikipediaQueryRun
+from langchain_community.utilities import WikipediaAPIWrapper
+
 import random
 
 config = {"configurable": {"thread_id": "1"}}
@@ -27,12 +34,18 @@ def get_weather(query: str):
     
     return data
 
+wikipedia = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper())
 
-tools = [get_weather]
+tools = [get_weather,wikipedia]
 
 tool_node = ToolNode(tools)
 
-llm = ChatOllama(model="qwen3:4b").bind_tools(tools)
+llm = ChatOpenAI(
+    model="qwen/qwen3-4b-2507", 
+    api_key="your_api_key",
+    base_url="http://localhost:1234/v1")
+
+llm = llm.bind_tools(tools)
 
 def should_continue(state: MessagesState) -> Literal["tools", END]:
     messages = state['messages']
@@ -49,6 +62,9 @@ def should_continue(state: MessagesState) -> Literal["tools", END]:
 # Define the function that calls the model
 def call_model(state: MessagesState):
     messages = state['messages']
+    # Add a system message to the beginning of the conversation
+    messages.insert(0, HumanMessage(content="You are a helpful assistant with access to wikipedia. Today is October 16th 2025."))
+
     response = llm.invoke(messages)
     # We return a list, because this will get added to the existing list
     return {"messages": [response]}

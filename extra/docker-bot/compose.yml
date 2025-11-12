@@ -28,6 +28,8 @@ services:
     image: ollama/ollama:latest
     volumes:
       - ollama:/root/.ollama
+    environment:
+      OLLAMA_DEBUG: 1
     ports:
       - 11434:11434
   

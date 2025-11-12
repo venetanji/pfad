@@ -4,3 +4,5 @@ matplotlib
 Pillow
 protobuf
 python-dotenv
+emotiefflib
+facenet-pytorch

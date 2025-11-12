@@ -12,7 +12,7 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/gio")
+@app.post("/gio")
 def read_root(mr: MusicRequest):
     return {"Hello": "Gio"}
 
