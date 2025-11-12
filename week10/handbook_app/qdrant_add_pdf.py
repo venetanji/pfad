@@ -6,7 +6,7 @@ import requests
 import os
 import re
 
-PDF_URL = "https://www.polyu.edu.hk/ar/docdrive/polyu-students/student-handbook/Student_Handbook_2024-25_English.pdf"
+PDF_URL = "https://www.polyu.edu.hk/ar/docdrive/polyu-students/student-handbook/Student_Handbook_2025-26_English.pdf"
 
 if os.path.exists("student_handbook.pdf"):
     print("File already exists")
