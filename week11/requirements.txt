@@ -1,0 +1,16 @@
+# NDI Hand Tracking with OSC
+# Dependencies for week11 NDI hand tracking example
+
+# NDI video streaming
+cyndilib>=1.0.0
+
+# Computer vision and hand tracking
+opencv-python
+mediapipe==0.10.21
+
+# OSC communication
+python-osc
+
+# Utilities
+numpy
+python-dotenv
