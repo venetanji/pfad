@@ -27,12 +27,12 @@ import math
 import sys
 from pathlib import Path
 
-# Import cyndilib for NDI reception
+# Import shared NDI utilities
 try:
-    import cyndilib as ndi
+    from ndi_utils import NDIReceiver
 except ImportError:
-    print("❌ Error: cyndilib not installed")
-    print("Install with: pip install cyndilib")
+    print("❌ Error: cyndilib or ndi_utils not available")
+    print("Install cyndilib with: pip install cyndilib")
     sys.exit(1)
 
 # Import python-osc for OSC server
@@ -108,12 +108,12 @@ class NDIHandTracker:
         
         # Create hands detector with optimized settings
         # - model_complexity=1: Balance between speed and accuracy
-        # - min_detection_confidence: Minimum confidence for initial detection
-        # - min_tracking_confidence: Minimum confidence for tracking between frames
+        # - min_detection_confidence: Higher confidence to reduce false detections
+        # - min_tracking_confidence: Higher confidence for stable tracking
         self.hands = self.mp_hands.Hands(
             model_complexity=1,
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5,
+            min_detection_confidence=0.75,  # Higher confidence to reduce false positives
+            min_tracking_confidence=0.75,   # Higher tracking confidence
             max_num_hands=2  # Track up to 2 hands
         )
         
@@ -134,52 +134,29 @@ class NDIHandTracker:
         # Frame counter for display
         self.frame_count = 0
         
+        # Simplified hand tracking - single hand is always ID 0
+        
     def setup_ndi_receiver(self):
         """
         Initialize NDI receiver to capture video from NDI source
         
         NDI (Network Device Interface) allows video to be sent over a network.
         This is commonly used in professional video production and live streaming.
+        
+        This implementation uses the shared NDI utilities module.
         """
         try:
-            # Find available NDI sources on the network
-            print("🔍 Searching for NDI sources...")
-            finder = ndi.finder_create()
+            # Create NDI receiver using the shared utilities
+            self.ndi_receiver = NDIReceiver(source_name=self.ndi_source_name)
             
-            # Wait a moment for sources to be discovered
-            import time
-            time.sleep(2)
-            
-            sources = finder.get_sources()
-            
-            if not sources:
-                print("⚠️  No NDI sources found on network")
+            # Connect to NDI source
+            if not self.ndi_receiver.connect():
+                print("❌ Failed to connect to NDI source")
                 return False
             
-            print(f"📺 Found {len(sources)} NDI source(s):")
-            for i, source in enumerate(sources):
-                print(f"  {i + 1}. {source.name}")
-            
-            # Select NDI source
-            if self.ndi_source_name:
-                # Try to find the specified source
-                selected_source = None
-                for source in sources:
-                    if self.ndi_source_name in source.name:
-                        selected_source = source
-                        break
-                
-                if not selected_source:
-                    print(f"⚠️  Source '{self.ndi_source_name}' not found, using first source")
-                    selected_source = sources[0]
-            else:
-                # Use first available source
-                selected_source = sources[0]
-            
-            print(f"✅ Connecting to NDI source: {selected_source.name}")
-            
-            # Create NDI receiver
-            self.ndi_receiver = ndi.receiver_create(selected_source)
+            # Get source info for display
+            source_info = self.ndi_receiver.get_source_info()
+            print(f"✅ Connected to NDI source: {source_info['name']}")
             
             return True
             
@@ -214,25 +191,16 @@ class NDIHandTracker:
             numpy.ndarray: BGR image frame, or None if no frame available
         """
         if self.use_ndi and self.ndi_receiver:
-            # Get frame from NDI
+            # Get frame from NDI using the shared utilities
             try:
-                # Receive video frame from NDI
-                # The timeout determines how long to wait for a frame
-                frame_type, data = self.ndi_receiver.capture_video(timeout_ms=1000)
+                # Check if still connected
+                if not self.ndi_receiver.is_connected():
+                    print("⚠️  NDI source disconnected")
+                    return None
                 
-                if frame_type == ndi.FrameType.video:
-                    # Convert NDI frame to OpenCV format
-                    # NDI typically uses UYVY or RGBA format
-                    frame = np.copy(data)
-                    
-                    # Check frame format and convert to BGR for OpenCV
-                    if len(frame.shape) == 3:
-                        if frame.shape[2] == 4:  # RGBA
-                            frame = cv2.cvtColor(frame, cv2.COLOR_RGBA2BGR)
-                        elif frame.shape[2] == 3:  # RGB
-                            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-                    
-                    return frame
+                # Get frame using the shared NDI utilities
+                frame = self.ndi_receiver.get_frame()
+                return frame
                     
             except Exception as e:
                 print(f"⚠️  NDI frame capture error: {e}")
@@ -277,7 +245,9 @@ class NDIHandTracker:
         center_x = sum_x / num_landmarks
         center_y = sum_y / num_landmarks
         
-        return center_x, center_y
+        return (center_x, center_y)
+    
+
     
     def calculate_pinch_data(self, hand_landmarks, frame_shape):
         """
@@ -356,10 +326,9 @@ class NDIHandTracker:
         
         # Check if hands were detected
         if results.multi_hand_landmarks:
-            for hand_id, hand_landmarks in enumerate(results.multi_hand_landmarks):
+            for hand_landmarks in results.multi_hand_landmarks:
                 # Create HandData object for this hand
                 hand_data = HandData()
-                hand_data.hand_id = hand_id
                 
                 # Calculate hand center position
                 hand_data.center_x, hand_data.center_y = \
@@ -377,6 +346,10 @@ class NDIHandTracker:
                 hand_data.is_pinching = hand_data.pinch_length < 0.05
                 
                 hands_data.append(hand_data)
+        
+        # Simple hand ID assignment: first hand is always 0, second is 1
+        for i, hand_data in enumerate(hands_data):
+            hand_data.hand_id = i
         
         return hands_data, results
     
@@ -571,14 +544,28 @@ class NDIHandTracker:
         print("Press 'q' to quit\n")
         
         try:
+            no_frame_count = 0
+            max_no_frame_count = 100  # Allow more consecutive empty frames for hand tracking
+            
             while True:
                 # Get next frame
                 frame = self.get_frame()
                 
                 if frame is None:
-                    print("⚠️  No frame received, retrying...")
+                    no_frame_count += 1
+                    if no_frame_count >= max_no_frame_count:
+                        print("⚠️  Too many consecutive empty frames, source may be unavailable")
+                        break
+                    elif no_frame_count % 20 == 0:
+                        print(f"⚠️  No frame received ({no_frame_count}/{max_no_frame_count})")
+                    
+                    # Still check for 'q' key press even when no frame
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        break
                     continue
                 
+                # Reset no frame counter when we get a frame
+                no_frame_count = 0
                 self.frame_count += 1
                 
                 # Process hands in the frame
@@ -614,8 +601,9 @@ class NDIHandTracker:
         print("\n🧹 Cleaning up...")
         
         if self.ndi_receiver:
-            # Note: cyndilib handles cleanup automatically
-            pass
+            # Clean up NDI receiver resources using the shared utilities
+            self.ndi_receiver.cleanup()
+            self.ndi_receiver = None
         
         if self.camera_cap:
             self.camera_cap.release()

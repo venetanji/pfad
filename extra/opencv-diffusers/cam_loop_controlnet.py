@@ -22,7 +22,7 @@ seed = 1231412
 prompt = "cg, pixar, animation, 3d, character, design, concept, art, illustration, drawing, painting, digital"
 negative_prompt = "realistic, portrait, photography, photo, human, face, people"
 
-cap = cv2.VideoCapture(2, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(4)
 # set camera resolution
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)

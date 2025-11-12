@@ -2,11 +2,16 @@
 # Dependencies for week11 NDI hand tracking example
 
 # NDI video streaming
-cyndilib>=1.0.0
+cyndilib
 
 # Computer vision and hand tracking
+# 
+# Install cuda version of opencv-python if you have a compatible NVIDIA GPU:
+# pip install https://github.com/cudawarped/opencv-python-cuda-wheels/releases/download/4.13.0.20250811/opencv_contrib_python_rolling-4.13.0.20250812-cp37-abi3-win_amd64.whl
 opencv-python
-mediapipe==0.10.21
+
+# Mediapipe for hand tracking
+mediapipe
 
 # OSC communication
 python-osc

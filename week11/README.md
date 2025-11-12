@@ -1,177 +1,81 @@
 # Week 11: NDI Hand Tracking with OSC
 
-This directory contains examples for integrating third-party creative tools with Python, including NDI video streaming, hand tracking, and OSC communication.
+A comprehensive hand tracking application that receives video from NDI sources, tracks hands using MediaPipe, and broadcasts hand data via OSC to other creative applications.
 
-## NDI Hand Tracking Application
+## 🚀 Quick Start
 
-### Overview
-
-`ndi_hand_tracking.py` is a comprehensive example that demonstrates:
-
-- **NDI Video Reception**: Receives video frames from an NDI source over the network using `cyndilib`
-- **Hand Tracking**: Uses MediaPipe to detect and track hands in real-time
-- **Gesture Analysis**: Calculates pinch gestures between thumb and index finger
-- **OSC Communication**: Broadcasts hand tracking data via OSC for use in other applications
-- **Visual Feedback**: Displays annotated video with hand overlays
-
-### Features
-
-#### Hand Tracking Metrics
-
-For each detected hand (up to 2 hands), the application calculates:
-
-- **Position**: X/Y center position (normalized 0-1)
-- **Pinch Length**: Distance between thumb tip and index finger tip (normalized)
-- **Pinch Angle**: Rotation angle of the pinch segment (in degrees)
-- **Pinch State**: Boolean flag indicating if hand is actively pinching
-
-#### OSC Messages
-
-Hand data is broadcast via OSC with the following address patterns:
-
-```
-/hand/[hand_id]/position [x, y]        # Hand center position (0-1)
-/hand/[hand_id]/pinch_length [length]  # Normalized distance (0-1)
-/hand/[hand_id]/pinch_angle [angle]    # Rotation angle (-180 to 180)
-/hand/[hand_id]/is_pinching [state]    # 1.0 or 0.0
-```
-
-Where `[hand_id]` is 0 for the first hand and 1 for the second hand.
-
-#### Visual Overlay
-
-The OpenCV display window shows:
-
-- Complete hand skeleton (MediaPipe landmarks)
-- Pinch segment between thumb and index finger
-  - **Blue line**: Normal state
-  - **Green line**: Pinching detected
-- Yellow circles at thumb and index tips
-- Cyan dot at hand center
-- Real-time hand metrics (position, pinch data)
-- Status information (source, hand count, frame number)
-
-### Installation
-
-1. Install dependencies:
-
+### 1. Install Dependencies
 ```bash
 cd week11
 pip install -r requirements.txt
 ```
 
-#### Dependencies
-
-- `cyndilib` - NDI video streaming
-- `opencv-python` - Computer vision and display
-- `mediapipe` - Hand tracking AI model
-- `python-osc` - OSC communication protocol
-- `numpy` - Numerical operations
-- `python-dotenv` - Environment configuration
-
-### Testing and Validation
-
-Before running the full application, you can validate the setup:
-
-#### Run Validation Tests
-
+### 2. Test Your Setup
 ```bash
+# Validate everything is working
 python test_validation.py
-```
 
-This tests:
-- File structure
-- Week08 integration
-- Requirements completeness
-- Code syntax
-- Hand calculation logic
-- OSC message patterns
-
-#### Test OSC Messages
-
-To test your OSC receiver without NDI/camera setup:
-
-```bash
+# Test OSC messages (without camera)
 python osc_demo.py
 ```
 
-This sends animated example OSC messages showing what the real application sends.
+### 3. Run the Application
 
-Options:
-- `--osc-ip` : IP address to send to (default: 127.0.0.1)
-- `--osc-port` : Port number (default: 8000)
-- `--duration` : How long to run in seconds (default: 10)
-
-### Usage
-
-#### Basic Usage (Auto-detect NDI source)
-
+**With NDI source:**
 ```bash
 python ndi_hand_tracking.py
 ```
 
-#### Specify NDI Source
-
+**With regular camera:**
 ```bash
-python ndi_hand_tracking.py --ndi-source "OBS (Output)"
-```
-
-#### Custom OSC Configuration
-
-```bash
-python ndi_hand_tracking.py --osc-ip 192.168.1.100 --osc-port 9000
-```
-
-#### All Options
-
-```bash
-python ndi_hand_tracking.py \
-  --ndi-source "Source Name" \
-  --osc-ip 127.0.0.1 \
-  --osc-port 8000
-```
-
-### Command Line Arguments
-
-- `--ndi-source` : Name of NDI source to connect to (default: auto-detect first available)
-- `--osc-ip` : IP address to send OSC messages (default: 127.0.0.1)
-- `--osc-port` : Port number for OSC messages (default: 8000)
-
-### Camera Fallback
-
-If no NDI source is available, the application will automatically fall back to using a regular camera. It uses the camera configuration from `week08/setup_camera.py`.
-
-To configure your camera:
-
-```bash
+# First configure camera (one-time setup)
 cd ../week08
 python setup_camera.py
+cd ../week11
+
+# Then run
+python ndi_hand_tracking.py
 ```
 
-### Integration with Other Applications
+## 📡 What You Get
 
-#### TouchDesigner
+### OSC Messages
+Each hand sends these messages with **consistent hand IDs**:
 
-1. In TouchDesigner, add an "OSC In DAT"
-2. Set the network port to match your OSC port (default: 8000)
-3. Use the incoming OSC messages in your network:
-   - `/hand/0/position` for first hand position
-   - `/hand/0/pinch_length` for pinch distance
-   - etc.
+```
+/hand/0/position [x, y]           # Where the hand is (0-1)
+/hand/0/pinch_length [distance]   # How close thumb and index are
+/hand/0/pinch_angle [angle]       # Rotation angle of the pinch
+/hand/0/is_pinching [true/false]  # Is the hand pinching?
+```
 
-#### Max/MSP
+Second hand uses `/hand/1/...`
 
-1. Add `udpreceive` object with your OSC port
-2. Add `route /hand/0 /hand/1` to separate hand data
-3. Further route messages by parameter (position, pinch_length, etc.)
+### Hand ID Consistency
+✅ **New Feature**: Hands maintain consistent IDs even when temporarily lost or when hands cross over each other. The system tracks hand positions between frames to assign stable IDs.
 
-#### Processing
+### Visual Feedback
+- Complete hand skeleton overlay
+- Pinch detection (blue = normal, green = pinching)
+- Hand center indicators
+- Real-time metrics display
 
-Use the oscP5 library to receive OSC messages:
+## 🎯 Integration Examples
 
+### TouchDesigner
+1. Add "OSC In DAT" set to port 8000
+2. Watch OSC messages flow in
+3. Map `/hand/0/position` to visual parameters
+4. Use `/hand/0/is_pinching` to trigger effects
+
+### Max/MSP
+1. Use `udpreceive 8000`
+2. Route with `route /hand/0 /hand/1`
+3. Map pinch gestures to synthesis parameters
+
+### Processing
 ```java
 import oscP5.*;
-
 OscP5 oscP5;
 
 void setup() {
@@ -182,138 +86,181 @@ void oscEvent(OscMessage msg) {
   if (msg.checkAddrPattern("/hand/0/position")) {
     float x = msg.get(0).floatValue();
     float y = msg.get(1).floatValue();
-    // Use x, y values
+    // Control graphics with hand position
   }
 }
 ```
 
-### How It Works
+## ⚙️ Command Line Options
 
-#### 1. Video Source
+```bash
+python ndi_hand_tracking.py \
+  --ndi-source "OBS (Output)" \    # NDI source name
+  --osc-ip 192.168.1.100 \         # IP for OSC messages
+  --osc-port 9000                  # OSC port
+```
 
-The application first attempts to connect to an NDI source on the network. NDI (Network Device Interface) is a protocol that allows video to be transmitted over standard networks with very low latency. Common NDI sources include:
+## 🔧 Technical Details
 
-- OBS Studio (with NDI plugin)
-- vMix
-- Wirecast
-- NDI Scan Converter
-- TouchDesigner
+### Hand Tracking
+- **MediaPipe Hands**: Detects 21 landmarks per hand
+- **Consistent IDs**: Tracks hand positions between frames
+- **Max Distance**: 0.3 normalized units for hand matching
+- **Pinch Detection**: Thumb-index distance < 5% of frame diagonal
 
-If no NDI source is found, it falls back to a regular USB/built-in camera.
+### NDI Video
+- **Protocol**: Network Device Interface for low-latency video
+- **Sources**: OBS, vMix, TouchDesigner, NDI Scan Converter
+- **Fallback**: Automatic camera fallback if no NDI found
+- **Format**: BGRX/BGRA with highest bandwidth
 
-#### 2. Hand Detection
+### OSC Communication
+- **Protocol**: Open Sound Control over UDP
+- **Default**: 127.0.0.1:8000 (localhost)
+- **Network**: Can broadcast to any IP/port
+- **Compatible**: TouchDesigner, Max/MSP, Processing, PureData
 
-MediaPipe Hands is a machine learning solution that detects 21 3D hand landmarks in real-time. The landmarks include:
+## 🛠️ Implementation Details
 
-- Wrist (0)
-- Thumb: 1-4 (tip at 4)
-- Index finger: 5-8 (tip at 8)
-- Middle finger: 9-12 (tip at 12)
-- Ring finger: 13-16 (tip at 16)
-- Pinky: 17-20 (tip at 20)
+### Files Structure
+- `ndi_hand_tracking.py` - Main application with consistent hand tracking
+- `ndi_utils.py` - Shared NDI receiver utilities following cyndilib best practices
+- `test_ndi_receiver.py` - Simple NDI connectivity test
+- `test_validation.py` - Validates setup without dependencies
+- `osc_demo.py` - Sends test OSC messages for receiver testing
 
-#### 3. Pinch Gesture
+### Key Improvements Made
 
-The pinch gesture is detected by analyzing the distance between:
-- Landmark 4 (thumb tip)
-- Landmark 8 (index finger tip)
+#### 1. Consistent Hand IDs
+**Problem**: MediaPipe can assign inconsistent hand IDs when hands disappear/reappear or cross over.
 
-When this distance is less than 5% of the frame diagonal, it's considered a "pinch".
+**Solution**: Track hand positions between frames and assign stable IDs based on spatial proximity.
 
-#### 4. Data Calculation
+```python
+def assign_consistent_hand_ids(self, current_hands):
+    # Match current hands to previous hands by position
+    # Assign stable IDs based on closest matching positions
+    # Handle new hands and disappeared hands gracefully
+```
 
-For each hand:
+#### 2. Proper cyndilib Implementation
+**Original Issues Fixed**:
+- Incorrect Finder usage
+- Missing receiver configuration
+- Wrong frame capture method
+- No connection handling
 
-- **Center Position**: Average of all 21 landmark positions
-- **Pinch Length**: Euclidean distance between thumb and index tips, normalized by frame diagonal
-- **Pinch Angle**: Arc tangent of the vector from thumb to index (atan2)
+**Fixed Implementation**:
+```python
+# Proper cyndilib pattern
+with ndi.Finder() as finder:
+    finder.wait_for_sources(timeout=10)
+    sources = list(finder)
 
-#### 5. OSC Broadcasting
+# Proper receiver setup
+receiver = ndi.Receiver(
+    color_format=RecvColorFormat.BGRX_BGRA,
+    bandwidth=RecvBandwidth.highest
+)
+```
 
-The calculated data is sent via UDP to the specified IP and port using the OSC protocol. OSC is widely supported in creative coding environments and allows for easy integration with audio/visual software.
+#### 3. Robust Error Handling
+- NDI connection timeout handling
+- Camera fallback system
+- Graceful degradation
+- Resource cleanup
 
-### Troubleshooting
+## 🎨 Creative Applications
 
-#### No NDI sources found
+### Interactive Installations
+- Map hand position to particle systems
+- Control lighting with pinch gestures
+- Create responsive environments
 
-- Ensure NDI source is running and on the same network
-- Check firewall settings (NDI uses UDP ports 5960-5970)
-- Wait a few seconds after starting NDI source for discovery
+### VJ Performance
+- Hand-controlled video effects
+- Real-time visual manipulation
+- Gesture-based scene switching
 
-#### Camera not working
+### Music Control
+- Map pinch to filter cutoff
+- Use hand position for spatial audio
+- Gesture-triggered samples
 
-- Run camera setup: `cd ../week08 && python setup_camera.py`
-- Ensure camera is not in use by another application
-- Try unplugging and reconnecting the camera
+### Game Controls
+- Alternative input method
+- Accessibility-friendly interface
+- Natural gesture recognition
 
-#### OSC messages not received
+## 🐛 Troubleshooting
 
-- Check that receiving application is listening on correct port
-- Verify IP address (use 127.0.0.1 for local, or actual IP for network)
-- Use an OSC monitor tool to verify messages are being sent
+### Common Issues
 
-#### Performance issues
+**"No NDI sources found"**
+- Ensure NDI source is running (OBS with NDI plugin, etc.)
+- Check network connectivity (same subnet)
+- Wait 5-10 seconds after starting NDI source
 
-- Reduce video resolution in NDI source
-- Lower MediaPipe model complexity (edit `model_complexity` in code)
-- Close other applications using CPU/GPU
+**"Hand IDs jumping around"**
+- ✅ Fixed with consistent hand tracking
+- Hands now maintain stable IDs even when temporarily lost
 
-### Educational Notes
+**"No working camera found"**
+- Run `cd ../week08 && python setup_camera.py`
+- Close other apps using the camera
+- Try different USB ports
 
-This example demonstrates several important concepts for interactive art:
+**"OSC not working"**
+- Verify receiving app is listening on correct port
+- Test with `python osc_demo.py` first
+- Check firewall settings
 
-1. **Network Video**: NDI allows video to flow between applications over standard networks
-2. **Computer Vision**: MediaPipe provides ready-to-use AI models for detecting humans
-3. **Gesture Recognition**: Simple distance/angle calculations create meaningful interactions
-4. **OSC Protocol**: Standard way to send control data between creative applications
-5. **Real-time Processing**: Balancing accuracy with frame rate for interactive work
+### Performance Tips
+- Reduce NDI source resolution
+- Lower MediaPipe model complexity
+- Close resource-heavy applications
 
-### Example Projects
+## 📚 Educational Value
 
-This application can be used as a foundation for:
+This project demonstrates:
 
-- **Interactive Installations**: Control visuals/sound with hand gestures
-- **VJ Tools**: Hand-controlled video effects in TouchDesigner
-- **Music Controllers**: Map pinch gestures to synthesizer parameters
-- **Game Controls**: Alternative input method using hand tracking
-- **Accessibility Tools**: Hands-free control interfaces
+1. **Network Protocols**: NDI for video, OSC for control data
+2. **Computer Vision**: Real-time hand detection and tracking
+3. **Gesture Recognition**: Converting motion to meaningful data
+4. **Creative Coding**: Integration with artistic tools
+5. **Real-time Systems**: Balancing accuracy with performance
 
-### Credits
+## 🏗️ Architecture
 
-- **MediaPipe**: Google's open-source ML framework
-- **cyndilib**: Python wrapper for NDI SDK
-- **python-osc**: OSC implementation for Python
-- **OpenCV**: Computer vision library
+```
+NDI Source → NDI Receiver → MediaPipe → Hand Tracking → OSC Broadcast
+    ↓              ↓           ↓            ↓             ↓
+  OBS/vMix    cyndilib    AI Model    Gesture Calc   TouchDesigner
+```
 
-### Helper Scripts
+## 📄 Dependencies
 
-#### test_validation.py
+- `cyndilib` - NDI video streaming
+- `opencv-python` - Computer vision and display  
+- `mediapipe` - Hand tracking AI model
+- `python-osc` - OSC communication protocol
+- `numpy` - Numerical operations
 
-Validates the implementation without requiring dependencies:
-- Tests file structure and integration
-- Validates calculation logic
-- Checks OSC message patterns
-- Verifies code syntax
+## 🎓 Credits
 
-Run with: `python test_validation.py`
+- **MediaPipe**: Google's ML framework for hand detection
+- **cyndilib**: Python NDI SDK wrapper
+- **NDI**: NewTek's Network Device Interface
+- **OSC**: Open Sound Control protocol
 
-#### osc_demo.py
-
-Sends example OSC messages for testing receivers:
-- Simulates animated hand movements
-- No camera or NDI required
-- Useful for testing TouchDesigner/Max patches
-
-Run with: `python osc_demo.py [--osc-ip IP] [--osc-port PORT] [--duration SECONDS]`
-
-### License
+## 📜 License
 
 Educational example for PFAD (Programming for Art and Design) course.
 
 ---
 
-## Other Week 11 Examples
+## 🔗 Related Examples
 
-- `blender/` - Blender integration examples
+- `blender/` - Blender integration scripts
 - `orange/` - Orange Data Mining workflows  
-- `touchdesigner/` - TouchDesigner Python integration including NDI examples
+- `touchdesigner/` - TouchDesigner Python examples
