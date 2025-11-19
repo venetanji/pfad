@@ -56,7 +56,13 @@ metas_headers = [StringVariable(key) for key in meta_keys]
 domain = Domain(variable_headers, metas=metas_headers)
 
 # Initialize numpy arrays for vectors and metadata
+# Create an empty 2D array with 0 rows and embeds_length columns for vectors
+# Example: if embeds_length=768, this creates a (0, 768) shaped array
+# We'll stack new vectors as rows, so each point becomes one row in this matrix
 vectors = np.empty((0, embeds_length), dtype=float)
+
+# Create an empty 2D array for metadata with 0 rows and len(meta_keys) columns
+# '<U256' means Unicode strings with max 256 characters per field
 metas = np.empty((0, len(meta_keys)), dtype='<U256')  # Increased size for longer strings
 
 # Scroll through all points in the collection
@@ -89,7 +95,21 @@ for point in all_points:
     print(f"Processing point ID: {point.id}")
     
     # Add vector to vectors array
-    vector = np.array(point.vector).reshape(1, -1)
+    # Step 1: Convert point.vector (a list) to a numpy array
+    # Example: point.vector = [0.1, 0.2, 0.3] becomes np.array([0.1, 0.2, 0.3])
+    vector = np.array(point.vector)
+    
+    # Step 2: Reshape from 1D to 2D array (1 row, n columns)
+    # reshape(1, -1) means: 1 row, automatically calculate columns (-1 = auto)
+    # Example: [0.1, 0.2, 0.3] becomes [[0.1, 0.2, 0.3]]
+    # This is needed because vstack expects 2D arrays to stack properly
+    vector = vector.reshape(1, -1)
+    
+    # Step 3: Vertically stack (append) this vector to our growing vectors array
+    # vstack = "vertical stack" - stacks arrays on top of each other (row-wise)
+    # Example: if vectors = [[0.1, 0.2], [0.3, 0.4]] and vector = [[0.5, 0.6]]
+    # Result: [[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]]
+    # Each iteration adds one more row to our vectors matrix
     vectors = np.vstack([vectors, vector])
     
     # Add metadata to metas array

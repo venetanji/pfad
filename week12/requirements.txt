@@ -1,0 +1,4 @@
+langchain_openai
+fastmcp
+langchain-mcp-adapters
+streamlit

@@ -1,72 +1,52 @@
-import streamlit as st
-from comfy_api_simplified import ComfyApiWrapper, ComfyWorkflowWrapper
-from langchain_ollama import ChatOllama
-from pathlib import Path
-import pymupdf4llm
-import uuid
-import random
-
 import asyncio
-import json
+import streamlit as st
+from bot import graph
 
-basefolder = Path(__file__).parent
-comfyui_flows = basefolder / "workflows"
-docs = basefolder / "documents"
+# Initialize session state for chatbot
+if "messages" not in st.session_state:
+    st.session_state["config"] = {"configurable": {"thread_id": "1"}}
+    st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
 
-if "comfy_api" not in st.session_state:
-    st.session_state.comfy_api = ComfyApiWrapper("http://127.0.0.1:8188/")
+def chatbot():
+    st.title("💬 Chatbot")
+    st.caption("🚀 A Streamlit chatbot with an mcp tool for image generation")
 
-if "ollama" not in st.session_state:
-    st.session_state.ollama = ChatOllama(model="llama3.2")
-    st.session_state.ollama_json = ChatOllama(model="llama3.2",format="json")
+    # Display chat messages
+    for msg in st.session_state.messages:
+        st.chat_message(msg["role"]).write(msg["content"])
 
-def comfyui():
-    st.title("ComfyUI")
-    st.write("Welcome to ComfyUI! A simple UI library for Streamlit.")
-
-    workflows = [wf.name for wf in comfyui_flows.glob("*.json")]
-    
-    if selected_workflow := st.selectbox("Select a workflow", workflows):
-        wf = ComfyWorkflowWrapper(comfyui_flows / selected_workflow)
-
-    batch_size = st.slider("Batch Size", 1, 10, 2)
-
-    if prompt := st.text_input("Prompt"):
-        wf.set_node_param("KSampler", "seed", random.randint(0, 1000))       
-        wf.set_node_param("Empty Latent Image", "batch_size", batch_size)
-        wf.set_node_param("positive", "text", prompt)
+    # Chat input
+    if prompt := st.chat_input():
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        st.chat_message("user").write(prompt)
         
-        get_image = st.session_state.comfy_api.queue_and_wait_images(wf, "Save Image")
+        async def run_agent(prompt_text: str):
+            responses = []
+            async for event in graph.astream({"messages": st.session_state.messages}, config=st.session_state["config"]):
+                handled = False
+                for value in event.values():
+                    for last_message in value["messages"]:
+                        responses.append(last_message)
+                        handled = True
+                        break
+                    if handled:
+                        break
+            return responses
 
-        # queue your workflow for completion
-        results = asyncio.run(get_image)
-        for filename, image_data in results.items():
-            st.image(image_data, caption=filename)
+        agent_messages = asyncio.run(run_agent(prompt))
 
-def structured_output():
-    st.title("Structured Output")
-    if pdf_file := st.file_uploader("Upload a PDF file", type=["pdf"]):
-        filename = f"{uuid.uuid4()}.pdf"
-        with open(docs / filename, "wb") as f:
-            f.write(pdf_file.getvalue())
-
-        md_text = pymupdf4llm.to_markdown(docs / filename)
-        json_mode = st.checkbox("JSON Mode")
-        
-        if prompt := st.chat_input("Ask me stuff!"):
-            prompt = f"{md_text}\n{prompt}"
-            if json_mode:
-                response = st.session_state.ollama_json.invoke(prompt)
-                try:
-                    response = json.loads(response.content)
-                    st.write(response)
-                except:
-                    st.write(response)
-            else:
-                response = st.session_state.ollama.invoke(prompt)
-                st.write(response.content)
+        for last_message in agent_messages:
+            if last_message.type == "ai":
+                if last_message.tool_calls:
+                    st.session_state.messages.append({"role": "system", "content": f"Tool call: {last_message.tool_calls}"})
+                    st.chat_message("assistant").text(f"🔧 Tool call: {last_message.tool_calls}")
+                else:
+                    st.session_state.messages.append({"role": "assistant", "content": last_message.content})
+                    st.chat_message("assistant").write(last_message.content)
+            elif last_message.type == "tool":
+                st.session_state.messages.append({"role": "system", "content": f"Tool response: {last_message.content}"})
+                st.chat_message("assistant").text(f"⚙️ Tool response: {last_message.content}")
     
-comfyui_page = st.Page(comfyui, title="ComfyUI")
-structured_output_page = st.Page(structured_output, title="Structured Output")
-pg = st.navigation([comfyui_page, structured_output_page])
+chatbot_page = st.Page(chatbot, title="💬 Chatbot")
+pg = st.navigation([chatbot_page])
 pg.run()

@@ -1,0 +1,3 @@
+[submodule "week12/comfyui-mcp-server"]
+	path = week12/comfyui-mcp-server
+	url = https://github.com/venetanji/comfyui-mcp-server.git
