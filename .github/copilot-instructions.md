@@ -127,7 +127,6 @@ This is a Python-based educational repository for Programming for Artists and De
 - **Files**: `1_face_detection.py`, `2_hand_tracking.py`, `3_pose_estimation.py`, `4_face_mesh.py`, `5_gesture_recognition.py`, `6_holistic_detection.py`, `7_selfie_segmentation.py`, `8_multi_detection.py`, `9_emotion_detection.py`, `camera_utils.py`, `setup_camera.py`
 - **Dependencies**: `mediapipe`, `opencv-python` (INSTALL FAILS)
 - **Topics**: Face detection, hand tracking, pose estimation, gesture recognition, webcam-based interactive applications
-- **Docker build time**: 20-30 seconds before SSL failure
 - **Test commands**:
   ```bash
   cd week08
