@@ -81,9 +81,10 @@ This is a Python-based educational repository for Programming for Artists and De
 - **Validation**: Modules import successfully, plotting works (save to `/tmp/`)
 - **Subfolder**: `python_foundations/` contains Jupyter notebooks covering flow control, functions, matplotlib installation, and variable types
 
-### Week 03: Generative Art & Time-Series Plotting
-- **Files**: `run_examples.py`, generative art scripts (`koch_curve.py`, `mandelbrot.py`, `sierpinksi_matplot_animation.py`), `week03_notebook.ipynb`
+### Week 03: Fractals & Mathematical Visualization
+- **Files**: `run_examples.py`, fractal scripts (`koch_curve.py`, `mandelbrot.py`, `sierpinksi_matplot_animation.py`), `week03_notebook.ipynb`
 - **Dependencies**: `numpy`, `matplotlib`, `pandas` (ALL WORK - install successfully)
+- **Topics**: Koch snowflake, Mandelbrot set, recursive algorithms, complex number mathematics
 - **Test commands**:
   ```bash
   cd week03
@@ -94,59 +95,44 @@ This is a Python-based educational repository for Programming for Artists and De
 - **Validation**: Full week03 functionality WORKS - script execution and plot generation succeed
 - **Output**: Plots saved to `week03/plots/` directory
 
-### Week 03: Generative Art & Time-Series Plotting
-- **Files**: `run_examples.py`, generative art scripts (`koch_curve.py`, `mandelbrot.py`, `sierpinksi_matplot_animation.py`), `week03_notebook.ipynb`
-- **Dependencies**: `numpy`, `matplotlib`, `pandas` (ALL WORK - install successfully)
-- **Test commands**:
-  ```bash
-  cd week03
-  pip3 install -r requirements.txt  # Installs successfully in ~30 seconds
-  python3 run_examples.py  # Generates plots in week03/plots/
-  ls plots/  # Should show line_plot.png, multi_series.png, rolling_mean.png, monthly_avg.png
-  ```
-- **Validation**: Full week03 functionality WORKS - script execution and plot generation succeed
-- **Output**: Plots saved to `week03/plots/` directory
-
-### Week 04: Streamlit Apps & AI Integration
-- **Files**: `ollama_chatbot.py`, `lmstudio_chatbot.py`, `wav_talker.py`, `display_graph.py`, `display_image.py`
-- **Dependencies**: `streamlit`, `ollama`, `openai`, `coqui-tts`, `fastapi`, `uvicorn` (INSTALL FAILS)
+### Week 04: Interactive User Interfaces with Streamlit
+- **Files**: `1_user_input.py`, `2_user_input_with_history.py`, `3_chat_with_response.py`, `ollama_chatbot.py`, `lmstudio_chatbot.py`, `display_graph.py`, `display_image.py`
+- **Dependencies**: `streamlit`, `ollama`, `openai` (INSTALL FAILS)
+- **Topics**: Basic user input, chat history, conversational interfaces, Streamlit fundamentals
 - **Expected**: Cannot run Streamlit apps due to missing dependencies
 - **Validation**: Check code syntax only; document dependency failures
 
-### Week 05: Computer Vision & Diffusion
-- **Files**: `st_tti.py`, `st_controlnet.py`, various image generation scripts
-- **Dependencies**: `diffusers`, `transformers`, `opencv-python`, `accelerate` (INSTALL FAILS)
+### Week 05: Generative Image Creation
+- **Files**: `1_random_image.py`, `2_gen_image.py`, `3_gen_image_lcm.py`, `4_controlnet_canny.py`, `st_tti.py`, `st_controlnet.py`, `python_classes_tutorial.ipynb`
+- **Dependencies**: `diffusers`, `transformers`, `PIL`, `torch`, `accelerate` (INSTALL FAILS)
+- **Topics**: Random image generation, NumPy array manipulation, RGB color spaces, PIL image handling, diffusion models
 - **Expected**: Cannot run image generation due to missing GPU libraries
 - **Validation**: Verify code structure and import patterns
 
-### Week 06: Audio Generation & Processing
-- **Files**: Audio generation scripts (`1_random_audio.py`, `2_gen_audio.py`, `3_synth_audio.py`), audio processing (`4_pyaudio_loopback.py`, `5_asyncio_loopback.py`), visualization (`6_waveform.py`, `5_spectrogram.py`)
-- **Dependencies**: `pyaudio`, `diffusers`, `numpy`, `matplotlib`, `transformers`, `pyo` (MIXED - numpy/matplotlib work, audio libraries fail)
+### Week 06: Audio Synthesis & Generation
+- **Files**: `1_random_audio.py`, `2_gen_audio.py`, `3_synth_audio.py`, `4a_asyncio_loopback.py`, `4b_pyaudio_loopback.py`, `5_spectrogram.py`, `5_waveform.py`, `6a_spectrogram_pygame.py`, `6b_spectrogram.py`
+- **Dependencies**: `pyaudio`, `numpy`, `matplotlib`, `pyo`, `pygame` (MIXED - numpy/matplotlib work, audio libraries fail)
+- **Topics**: Random audio generation, structured sound patterns, real-time audio streaming, sample rates, audio visualization
 - **Expected**: Audio library dependencies fail; numpy/matplotlib portions testable
 - **Validation**: Syntax check only for audio portions; test data processing if applicable
 
-### Week 07: LangGraph & Tool Calling
+### Week 07: AI Agents & LangGraph
 - **Files**: `1_langgraph_chat.py`, `2_tool_calling.py`, `3_graph_agent.py`, `processing/` subfolder
 - **Dependencies**: `langgraph`, `langchain_ollama` (INSTALL FAILS)
+- **Topics**: LangGraph chatbots, tool calling, AI agents, state management, conversation memory
 - **Expected**: Cannot run LangGraph agents due to missing dependencies
 - **Validation**: Code structure review only
 
-### Week 07: LangGraph & Tool Calling
-- **Files**: `1_langgraph_chat.py`, `2_tool_calling.py`, `3_graph_agent.py`, `processing/` subfolder
-- **Dependencies**: `langgraph`, `langchain_ollama` (INSTALL FAILS)
-- **Expected**: Cannot run LangGraph agents due to missing dependencies
-- **Validation**: Code structure review only
-
-### Week 08: Docker & LangGraph Bots
-- **Files**: `Dockerfile`, `compose.yml`, `src/app.py`, `src/bot.py`
-- **Dependencies**: `langgraph`, `langchain_ollama`, `streamlit` (INSTALL FAILS)
-- **Docker build time**: 20-30 seconds before SSL failure
+### Week 08: Computer Vision with MediaPipe
+- **Files**: `1_face_detection.py`, `2_hand_tracking.py`, `3_pose_estimation.py`, `4_face_mesh.py`, `5_gesture_recognition.py`, `6_holistic_detection.py`, `7_selfie_segmentation.py`, `8_multi_detection.py`, `9_emotion_detection.py`, `camera_utils.py`, `setup_camera.py`
+- **Dependencies**: `mediapipe`, `opencv-python` (INSTALL FAILS)
+- **Topics**: Face detection, hand tracking, pose estimation, gesture recognition, webcam-based interactive applications
 - **Test commands**:
   ```bash
   cd week08
-  docker compose config  # Works - validates YAML
-  docker build .  # FAILS after 20-30 seconds - EXPECTED
+  python3 -m py_compile camera_utils.py  # Syntax check works
   ```
+- **Validation**: Code syntax checking; cannot run due to mediapipe dependency
 
 ### Week 09: FastAPI & WebSockets
 - **Files**: `fastapi_example.py`, `websocket_server_echo.py`, `websocket_client_example.py`, `pygame_websocket.py`, `compose.yml`
@@ -154,23 +140,33 @@ This is a Python-based educational repository for Programming for Artists and De
 - **Expected**: Cannot run FastAPI/WebSocket servers due to missing dependencies
 - **Validation**: Code structure review only
 
-### Week 10: Vector Databases & User Management
-- **Files**: `app.py`, `model.py`, `weaviate_store.py`, `compose.yml`
-- **Dependencies**: `weaviate`, `langchain`, `peewee`, `pymupdf4llm`, `gensim` (INSTALL FAILS)
-- **Services**: Ollama, Weaviate (cannot start due to GPU requirements)
+### Week 10: Advanced Streamlit Applications
+- **Files**: `handbook_app/`, `login_app/`, `word2vec_example.py`
+- **Dependencies**: `qdrant`, `langchain`, `peewee`, `gensim` (INSTALL FAILS)
+- **Topics**: PDF processing, vector databases, semantic search, user authentication, session management, multi-page Streamlit apps
+- **Services**: Ollama, Qdrant (cannot start due to dependencies)
 - **Validation**: Code structure review only
 
-### Week 11: Third-Party Integrations
-- **Files**: Subdirectories for `blender/`, `orange/`, `touchdesigner/`
-- **Dependencies**: External applications (Blender, Orange Data Mining, TouchDesigner)
+### Week 11: 3D Modeling, NDI & External Tools
+- **Files**: `blender/`, `orange/`, `touchdesigner/`, `maxmsp/`, NDI integration (`ndi_hand_tracking.py`, `ndi_utils.py`), OSC (`osc_demo.py`)
+- **Dependencies**: External applications (Blender, Orange Data Mining, TouchDesigner, Max/MSP), NDI SDK
+- **Topics**: Python scripting for 3D modeling, visual data mining, NDI video streaming, OSC communication
 - **Expected**: Integration examples for external creative tools
 - **Validation**: Review code structure; cannot execute without external tools
 
-### Week 12: ComfyUI Integration
-- **Files**: `app.py`, `workflows/workflow_api.json`
-- **Dependencies**: Complex Streamlit + ComfyUI setup (INSTALL FAILS)
-- **Expected**: Multi-page Streamlit app with ComfyUI and structured output
-- **Validation**: Review navigation structure and API integration patterns
+### Week 12: MCP-Powered Streamlit Agents
+- **Files**: `app.py`, `bot.py`, `tools.py`, `comfyui-mcp-server/` submodule
+- **Dependencies**: `langchain`, `mcp`, `streamlit` (INSTALL FAILS)
+- **Topics**: Model Context Protocol (MCP), LangChain agent integration, tool calling, async orchestration, ComfyUI workflow automation
+- **Expected**: MCP agent with ComfyUI tool integration
+- **Validation**: Review agent loop architecture and MCP tool patterns
+
+### Week 13: Back to Basics – Semester Loop
+- **Files**: `semester.py`
+- **Dependencies**: None (standard library only)
+- **Topics**: `@dataclass` decorator, type annotations with `from __future__ import annotations`, clean control flow, deterministic helper classes
+- **Test command**: `cd week13 && python3 semester.py`
+- **Validation**: Pure Python - should run successfully
 
 ## Common Validation Patterns
 
@@ -231,14 +227,17 @@ This is a Python-based educational repository for Programming for Artists and De
 ### Most Important Directories:
 - `/week01/` - Basic web scraping foundation (network calls fail)
 - `/week02/` - Data visualization with matplotlib (WORKS) + Python foundations notebooks
-- `/week03/` - Generative art & time-series plotting (FULLY WORKS - pandas, matplotlib, numpy)
-- `/week04/` - Streamlit applications (dependencies fail)
-- `/week06/` - Audio generation & processing (partial - numpy/matplotlib work)
-- `/week07/` - LangGraph basics (dependencies fail)
-- `/week08/` - Docker containerization (build fails, config works)
+- `/week03/` - Fractals & mathematical visualization (FULLY WORKS - pandas, matplotlib, numpy)
+- `/week04/` - Streamlit UI applications (dependencies fail)
+- `/week05/` - Generative image creation (dependencies fail)
+- `/week06/` - Audio synthesis & processing (partial - numpy/matplotlib work)
+- `/week07/` - LangGraph AI agents (dependencies fail)
+- `/week08/` - MediaPipe computer vision (dependencies fail)
 - `/week09/` - FastAPI & WebSockets (dependencies fail)
-- `/week10/` - Vector databases & RAG (dependencies fail)
-- `/week11/` - Third-party tool integrations (Blender, Orange, TouchDesigner)
+- `/week10/` - Advanced Streamlit with vector databases (dependencies fail)
+- `/week11/` - Third-party tool integrations (Blender, Orange, TouchDesigner, NDI)
+- `/week12/` - MCP-powered Streamlit agents (dependencies fail)
+- `/week13/` - Back to basics (WORKS - pure Python)
 - `/extra/` - Additional examples: opencv-diffusers, nake, Y-R-we-here projects
 
 ### Common Commands Reference:
@@ -267,3 +266,38 @@ python3 -c "import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot a
 - Generated images: Week-specific subdirectories or `/tmp/`
 
 **REMEMBER**: This environment has significant network limitations. Focus on code structure validation, syntax checking, and testing with available system packages. Document when network-dependent features cannot be tested.
+
+## Course Patterns & Best Practices
+
+### Recurring Weekly Patterns
+1. **Numbered file progression**: Files often follow `1_`, `2_`, `3_` naming to indicate learning progression (e.g., `1_random_image.py` → `2_gen_image.py`)
+2. **requirements.txt per week**: Each week has isolated dependencies
+3. **Jupyter notebooks**: Most weeks include `week##_notebook.ipynb` for interactive exploration
+4. **Streamlit apps**: Weeks 04, 05, 10, 12 use Streamlit for UI (`st_*.py` prefix common)
+
+### Technology Progression Through Course
+- **Weeks 01-03**: Foundation (web scraping → visualization → generative art)
+- **Week 04**: Interactive UI introduction (Streamlit basics)
+- **Weeks 05-06**: Media generation (images → audio)
+- **Week 07**: AI integration (LangGraph, tool calling)
+- **Week 08**: Computer vision (MediaPipe)
+- **Week 09**: Web services (FastAPI, WebSockets)
+- **Week 10**: Production patterns (authentication, vector databases)
+- **Week 11**: External tool integration (Blender, TouchDesigner, NDI)
+- **Week 12**: Advanced AI agents (MCP, LangChain)
+- **Week 13**: Review & fundamentals (dataclasses, annotations)
+
+### Common Code Patterns
+- **Environment variables**: Use `python-dotenv` for API keys and configuration
+- **Type annotations**: Modern Python with `from __future__ import annotations`
+- **Dataclasses**: Clean data structures with `@dataclass` decorator
+- **Async patterns**: AsyncIO for concurrent operations (audio, websockets, agents)
+- **Streamlit state**: `st.session_state` for conversation history and user data
+
+### Creative Applications Focus
+The course emphasizes practical creative applications:
+- **Data visualization**: matplotlib for artistic visualizations
+- **Generative content**: Fractals, random images, synthesized audio
+- **Real-time interaction**: Webcam, audio streaming, WebSocket communication
+- **AI assistance**: Chatbots, tool-calling agents, image generation
+- **Tool integration**: Connecting Python with Blender, TouchDesigner, ComfyUI
