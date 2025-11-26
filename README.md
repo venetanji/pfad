@@ -171,30 +171,27 @@ Week 11 explores two powerful tools for artists and data scientists:
 
 This week bridges the gap between 3D art and data science.
 
-### Week 12: ComfyUI Integration & Structured Output 🎯
+### Week 12: MCP-Powered Streamlit Agents 🎯
 
-Week 12 covers advanced AI integration and workflow automation:
+Week 12 ties Streamlit, LangChain, and the Model Context Protocol (MCP) together:
 
-- **ComfyUI**: Integrating ComfyUI workflows for image generation
-- **Structured Output**: Using LLMs to extract structured data from PDFs
-- Async workflow processing with Python
-- JSON mode for structured LLM responses
-- Building multi-modal AI applications with Streamlit
+- `app.py` hosts a Streamlit chat UI that streams updates from a LangChain `create_agent` graph.
+- `bot.py` targets a local OpenAI-compatible endpoint (LM Studio, Ollama, etc.) so you can drive lightweight models without cloud calls.
+- `tools.py` shows how `MultiServerMCPClient` connects to the provided `comfyui-mcp-server/`, letting the agent trigger remote ComfyUI image workflows as tools.
+- Async orchestration keeps the UI responsive while the agent reasons, calls MCP tools, and reports tool responses back into chat history.
 
-Students learn to orchestrate complex AI workflows and extract structured information from unstructured data.
+This week is all about wiring creative tools into an agent loop rather than focusing on UI polish.
 
-### Week 13: Music Generation with MusicGen 🎵
+### Week 13: Back to Basics – Semester Loop ♻️
 
-Week 13 explores AI-powered music generation using Meta's MusicGen:
+Week 13 strips things down to a single `semester.py` script that replays the original pseudo-code loop with a tiny harness:
 
-- Creating a Streamlit interface for music generation
-- Working with external APIs (audiocraft-server)
-- Generating music from text descriptions
-- Configurable model selection (small, medium, large, melody)
-- Adjustable generation parameters (duration, style)
-- Audio playback and download functionality
+- `from __future__ import annotations` postpones evaluation of type hints so factory/class methods can annotate `Problem` before Python knows the class itself; this keeps the file Python 3.12-friendly without using string literal annotations everywhere.
+- The `@dataclass` decorator builds the `Problem` boilerplate (`__init__`, `__repr__`, comparisons) automatically, so you only declare the fields that matter (difficulty, solved flag, attempts).
+- Deterministic helper classes (`SemesterClock`, `Student`, `Code`) keep control flow safe while random checks mimic the original chaotic semester narrative.
+- Fresh print statements surface each attempt, state change, skill upgrade, and panic cool-down so you can observe the loop without stepping through a debugger.
 
-This final week demonstrates how to build creative AI applications that generate original music content.
+It is a quick reminder that solid fundamentals—clean dataclasses, future-ready annotations, and small test doubles—make bigger creative projects easier to reason about.
 
 ## 🧪 Extra Resources
 
